@@ -17,7 +17,7 @@ class HashManager(models.Manager):
                 self.hash_field_name = field.name
                 return field.name
 
-    def update_or_create(self, keys, defaults=None, **kwargs):
+    def update_or_create(self, keys, defaults=None, return_object=False, **kwargs):
         """
         Looks up an object with the given kwargs, updating one with defaults
         if it exists, otherwise creates a new one.
@@ -46,5 +46,8 @@ class HashManager(models.Manager):
         else:
             obj = qs.model(**dict(kwargs.items() + defaults.items())).save()
             created = True
+
+        if return_object:
+            obj = self.get(**{self.hash_field_name: hash_key})
 
         return obj, created
