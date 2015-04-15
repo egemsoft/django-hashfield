@@ -7,11 +7,11 @@ class HashManager(models.Manager):
     hash_field_name = 'hash_key'
 
     def hash_keys(self, **kwargs):
-        qs = super(HashManager, self).get_query_set()
+        qs = self.get_queryset()
         return list(qs.filter(**kwargs).values_list(self.get_hash_field_name(), flat=True))
 
     def get_hash_field_name(self):
-        qs = self.get_query_set()
+        qs = self.get_queryset()
         for field in qs.model._meta.fields:
             if isinstance(field, HashField):
                 self.hash_field_name = field.name
@@ -25,7 +25,7 @@ class HashManager(models.Manager):
         specifying whether an object was created.
         """
         self.get_hash_field_name()
-        qs = self.get_query_set()
+        qs = self.get_queryset()
 
         defaults = defaults or {}
         # lookup, params = self._extract_model_params(defaults, **kwargs)
