@@ -4,18 +4,20 @@ from .utils import hashit
 
 
 class HashManager(models.Manager):
-    hash_field_name = 'hash_key'
+    _hash_field_name = None
+
+    @property
+    def hash_field_name(self):
+        if self._hash_field_name is None:
+        
+            for field in self.model._meta.fields:
+                if isinstance(field, HashField):
+                    self._hash_field_name = field.name
+
+        return self._hash_field_name
 
     def hash_keys(self, **kwargs):
-        qs = self.get_queryset()
-        return list(qs.filter(**kwargs).values_list(self.get_hash_field_name(), flat=True))
-
-    def get_hash_field_name(self):
-        qs = self.get_queryset()
-        for field in qs.model._meta.fields:
-            if isinstance(field, HashField):
-                self.hash_field_name = field.name
-                return field.name
+        return list(self.filter(**kwargs).values_list(self.hash_field_name, flat=True))
 
     def update_or_create(self, keys, defaults=None, return_object=False, **kwargs):
         """
@@ -24,14 +26,10 @@ class HashManager(models.Manager):
         Returns a tuple (object, created), where created is a boolean
         specifying whether an object was created.
         """
-        self.get_hash_field_name()
-        qs = self.get_queryset()
-
         defaults = defaults or {}
-        # lookup, params = self._extract_model_params(defaults, **kwargs)
         hashed_params = []
 
-        for field in qs.model._meta.fields:
+        for field in self.model._meta.fields:
             if isinstance(field, HashField):
                 populate_from = getattr(field, 'populate_from', [])
                 for p in populate_from:
@@ -41,10 +39,10 @@ class HashManager(models.Manager):
         hash_key = hashit(''.join(hashed_params))
 
         if hash_key in keys:
-            obj = qs.filter(**{self.hash_field_name: hash_key}).update(**defaults)
+            obj = self.filter(**{self.hash_field_name: hash_key}).update(**defaults)
             created = False
         else:
-            obj = qs.model(**dict(kwargs.items() + defaults.items())).save()
+            obj = self.model(**dict(kwargs.items() + defaults.items())).save()
             created = True
 
         if return_object:
