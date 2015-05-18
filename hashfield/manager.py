@@ -9,7 +9,7 @@ class HashManager(models.Manager):
     @property
     def hash_field_name(self):
         if self._hash_field_name is None:
-        
+
             for field in self.model._meta.fields:
                 if isinstance(field, HashField):
                     self._hash_field_name = field.name
@@ -35,10 +35,18 @@ class HashManager(models.Manager):
                 for p in populate_from:
                     if p in kwargs:
                         hashed_params.append(str(kwargs.get(p, None)))
+            from django.db.models import DateTimeField
 
         hash_key = hashit(''.join(hashed_params))
 
         if hash_key in keys:
+            for field in self.model._meta.fields:
+                if isinstance(field, DateTimeField):
+                    auto_now = getattr(field, 'auto_now', None)
+                    if auto_now:
+                        import datetime
+
+                        defaults[field.name] = datetime.datetime.now()
             obj = self.filter(**{self.hash_field_name: hash_key}).update(**defaults)
             created = False
         else:
