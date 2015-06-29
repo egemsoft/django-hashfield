@@ -17,7 +17,6 @@ class HashField(models.CharField):
         kwargs.setdefault('editable', False)
         super(HashField, self).__init__(*args, **kwargs)
 
-
     def calculate_hash(self, model_instance):
         original_value = []
 
@@ -29,7 +28,7 @@ class HashField(models.CharField):
             for field_str in self.populate_from:
                 original_value.append(str(getattr(model_instance, field_str)))
 
-        setattr(model_instance, self.attname, hashit(''.join(original_value)))
+        setattr(model_instance, self.attname, hashit(original_value))
 
     def pre_save(self, model_instance, add):
         self.calculate_hash(model_instance)

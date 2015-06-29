@@ -37,7 +37,7 @@ class HashManager(models.Manager):
                         hashed_params.append(str(kwargs.get(p, None)))
             from django.db.models import DateTimeField
 
-        hash_key = hashit(''.join(hashed_params))
+        hash_key = hashit(hashed_params)
 
         if hash_key in keys:
             for field in self.model._meta.fields:
