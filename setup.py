@@ -1,3 +1,4 @@
+from codecs import open
 from distutils.core import setup
 
 setup(name='hashfield',
