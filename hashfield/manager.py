@@ -19,13 +19,14 @@ class HashManager(models.Manager):
     def hash_keys(self, **kwargs):
         return list(self.filter(**kwargs).values_list(self.hash_field_name, flat=True))
 
-    def update_or_create(self, keys, defaults=None, return_object=False, **kwargs):
+    def update_or_create(self, keys, defaults=None, return_object=False, return_hash=False, **kwargs):
         """
         Looks up an object with the given kwargs, updating one with defaults
         if it exists, otherwise creates a new one.
         Returns a tuple (object, created), where created is a boolean
         specifying whether an object was created.
         """
+        from django.db.models import DateTimeField
         defaults = defaults or {}
         hashed_params = []
 
@@ -35,7 +36,15 @@ class HashManager(models.Manager):
                 for p in populate_from:
                     if p in kwargs:
                         hashed_params.append(str(kwargs.get(p, None)))
-            from django.db.models import DateTimeField
+
+                    # If populate_from parameters comes from kwargs as object
+                    # populate_from = ['node_id']
+                    # kwargs = {'node': node_obj}
+                    if p.endswith('_id'):
+                        p_obj = kwargs.get(p[:-3], None)
+
+                        if p_obj and hasattr(p_obj, 'id'):
+                            hashed_params.append(str(p_obj.id))
 
         hash_key = hashit(hashed_params)
 
@@ -53,7 +62,10 @@ class HashManager(models.Manager):
             obj = self.model(**dict(kwargs.items() + defaults.items())).save()
             created = True
 
-        if return_object or created:
+        if return_object and not created:
             obj = self.get(**{self.hash_field_name: hash_key})
+
+        if return_hash:
+            obj = hash_key
 
         return obj, created
