@@ -23,7 +23,7 @@ install_reqs = parse_requirements(here + "/resources/requirements.txt", session=
 reqs = [str(ir.req) for ir in install_reqs]
 
 # Get the long description from the README file
-with open(path.join(here, 'README.md'), encoding='utf-8') as f:
+with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
