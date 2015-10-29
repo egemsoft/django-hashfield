@@ -15,7 +15,7 @@ from setuptools import setup, find_packages
 here = path.abspath(path.dirname(__file__))
 
 # parse_requirements() returns generator of pip.req.InstallRequirement objects
-install_reqs = parse_requirements(here + "/resources/requirements/prod.txt", session=False)
+install_reqs = parse_requirements(here + "/resources/requirements/dev.txt", session=False)
 
 # reqs is a list of requirement
 # e.g. ['django==1.5.1', 'mezzanine==1.4.6']
@@ -27,7 +27,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='django_hashfield',
-    version='0.2.0',
+    version='development',
 
     description='A reusable Django field.',
     long_description=long_description,
