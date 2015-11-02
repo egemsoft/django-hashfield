@@ -62,7 +62,7 @@ class HashManager(models.Manager):
             obj = self.model(**dict(kwargs.items() + defaults.items())).save()
             created = True
 
-        if return_object and not created:
+        if return_object:
             obj = self.get(**{self.hash_field_name: hash_key})
 
         if return_hash:
