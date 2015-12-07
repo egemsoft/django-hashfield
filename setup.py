@@ -27,15 +27,15 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='django_hashfield',
-    version='0.3.0-rc.1',
+    version='0.3.0-rc.2',
 
     description='A reusable Django field.',
     long_description=long_description,
 
     # The project's main homepage.
     url='https://github.com/egemsoft/django-hashfield/',
-    author='Hasan Basri Ates',
-    author_email='hbasria@gmail.com',
+    author='Egemsoft',
+    author_email='info@egemsoft.net',
 
     # Choose your license
     license='MIT',
