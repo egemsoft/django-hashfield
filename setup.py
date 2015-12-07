@@ -27,7 +27,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='django_hashfield',
-    version='development',
+    version='0.3.0-rc.1',
 
     description='A reusable Django field.',
     long_description=long_description,
