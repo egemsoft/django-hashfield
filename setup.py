@@ -34,8 +34,8 @@ setup(
 
     # The project's main homepage.
     url='https://github.com/egemsoft/django-hashfield/',
-    author='Hasan Basri Ates',
-    author_email='hbasria@gmail.com',
+    author='Egemsoft',
+    author_email='info@egemsoft.net',
 
     # Choose your license
     license='MIT',
